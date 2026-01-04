@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>広告のCAPI設定、もっと簡単に始めたい方へ - Stape Meta CAPI Gateway導入支援</title>
+    <style>
+        /* 基本設定 */
+        :root {
+            --primary-color: #007bff; /* メインカラー：青 */
+            --secondary-color: #6c757d; /* サブカラー：グレー */
+            --success-color: #28a745; /* 成功色：緑 */
+            --warning-color: #ffc107; /* 警告色：黄色 */
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --section-padding: 60px 20px;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        h1, h2, h3 {
+            margin-top: 0;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        p {
+            margin-bottom: 1.5em;
+        }
+
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ボタンの共通スタイル */
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-sm {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: #fff;
+        }
+
+        .btn-success:hover {
+            background-color: #1e7e34;
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background-color: #d39e00;
+        }
+
+        /* ユーティリティ */
+        .text-center { text-align: center; }
+        .highlight { font-weight: bold; color: #d9534f; }
+
+        /* 1. ヒーローセクション */
+        .hero-section {
+            background: linear-gradient(135deg, #f0f2f5 0%, #d9e2ec 100%);
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-headline {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .hero-subhead {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            margin-bottom: 40px;
+            font-weight: bold;
+        }
+
+        .hero-visual {
+            margin: 40px auto;
+            max-width: 400px;
+            height: 200px;
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            border: 2px dashed #cbd5e0;
+            color: #adb5bd;
+        }
+
+        /* 2. 共感セクション */
+        .empathy-section {
+            padding: var(--section-padding);
+            background-color: #fff;
+        }
+
+        .empathy-content {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .empathy-text {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .pain-points li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .pain-points li::before {
+            content: "×";
+            position: absolute;
+            left: 0;
+            color: #d9534f;
+            font-weight: bold;
+            font-size: 1.2rem;
+            line-height: 1.4;
+        }
+
+        .empathy-visual {
+            flex: 1;
+            max-width: 400px;
+            height: 250px;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            color: #adb5bd;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* 3. 解決策提示セクション */
+        .solution-section {
+            padding: var(--section-padding);
+            background-color: #e3f2fd; /* 薄い青 */
+        }
+
+        .solution-features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            flex: 1;
+            max-width: 300px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--success-color);
+            margin-bottom: 20px;
+            line-height: 1;
+        }
+
+        /* 4. 事前チェックセクション */
+        .pre-check-section {
+            padding: var(--section-padding);
+            background-color: #fff;
+        }
+
+        .check-list-container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: var(--light-bg);
+            padding: 30px;
+            border-radius: 8px;
+            border-left: 5px solid var(--warning-color);
+        }
+
+        .check-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .check-list li {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .check-list li:last-child {
+            border-bottom: none;
+        }
+
+        .check-label {
+            font-weight: 600;
+            flex: 1;
+            padding-right: 20px;
+        }
+
+        .check-options label {
+            margin-left: 15px;
+            cursor: pointer;
+        }
+        
+        /* 簡易的なラジオボタンの装飾 */
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        /* 5. 分岐セクション */
+        .branch-section {
+            padding: var(--section-padding);
+            background-color: var(--light-bg);
+        }
+
+        .branch-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .branch-col {
+            flex: 1;
+            max-width: 500px;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 5px solid #ccc;
+        }
+
+        .branch-col-a {
+            border-top-color: var(--success-color);
+        }
+
+        .branch-col-b {
+            border-top-color: var(--warning-color);
+        }
+
+        .branch-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        /* 6. フッター */
+        .footer {
+            background-color: #343a40;
+            color: #adb5bd;
+            padding: 40px 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .footer p {
+            margin-bottom: 10px;
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .hero-headline { font-size: 2rem; }
+            .hero-subhead { font-size: 1rem; }
+            .empathy-content, .branch-container { flex-direction: column; }
+            .empathy-text, .empathy-visual, .feature-box, .branch-col { max-width: 100%; }
+            .check-list li { flex-direction: column; align-items: flex-start; }
+            .check-options { margin-top: 10px; align-self: flex-end; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-headline">広告のCAPI設定、<br>もっと簡単に始めたい方へ</h1>
+            <p class="hero-subhead">※ただし、条件があります</p>
+            
+            <div class="hero-visual">
+                <p>[ Pixel / CAPI 連携イメージ図 ]</p>
+            </div>
+
+            <a href="#pre-check" class="btn btn-primary btn-sm">まずは事前チェックへ</a>
+        </div>
+    </header>
+
+    <section class="empathy-section">
+        <div class="container">
+            <h2>CAPI設定、正直しんどくないですか？</h2>
+            <div class="empathy-content">
+                <div class="empathy-text">
+                    <ul class="pain-points">
+                        <li>GTM（Googleタグマネージャー）の設定が複雑で手間がかかる</li>
+                        <li>Webサイト側のコード修正が必要で、影響範囲が怖い</li>
+                        <li>エンジニアとの調整に時間がかかり、なかなか進まない</li>
+                    </ul>
+                    <p class="highlight" style="font-size: 1.2em; margin-top: 30px;">「やることが多すぎる…」</p>
+                    <p>そう感じて、導入をためらっていませんか？そのお悩み、よくわかります。</p>
+                </div>
+                <div class="empathy-visual">
+                    <p>[ 複雑なタグ設定に頭を抱える担当者のイラスト ]</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="solution-section">
+        <div class="container">
+            <h2>実は、かなり簡単な方法があります</h2>
+            <p class="text-center" style="max-width: 800px; margin: 0 auto;">
+                それが、<strong>「Stape Meta CAPI Gateway」</strong>を活用した方法です。<br>
+                従来の複雑な設定プロセスを大幅に簡略化し、スピーディーな導入を実現します。
+            </p>
+
+            <div class="solution-features">
+                <div class="feature-box">
+                    <div class="feature-icon">✓</div>
+                    <h3>既存Pixelそのまま</h3>
+                    <p>現在お使いのMeta Pixelをそのまま利用。これまでのデータ資産を無駄にしません。</p>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">💻</div>
+                    <h3>サイト側ノータッチ</h3>
+                    <p>Webサイトのソースコードを修正する必要は一切ありません。エンジニアリソースも不要です。</p>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">🚀</div>
+                    <h3>爆速で導入完了</h3>
+                    <p>複雑なGTM設定も不要。驚くほど短期間でCAPI環境を構築できます。</p>
+                </div>
+            </div>
+
+            <div class="text-center" style="margin-top: 50px;">
+                <a href="#pre-check" class="btn btn-primary">事前チェックを始める</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="pre-check" class="pre-check-section">
+        <div class="container">
+            <h2>ただし、誰でも使えるわけではありません</h2>
+            <div style="max-width: 800px; margin: 0 auto;">
+                <p>Stape Meta CAPI Gatewayは非常に便利ですが、仕組み上、いくつかの前提条件をクリアしている必要があります。</p>
+                <p>Gatewayは、あなたのサイトとMetaの間に入り、ブラウザからのイベント情報を“信頼して”サーバーイベントとして転送する仕組みで動作します。そのため、基本的なWeb側の設定が正しく行われていることが大前提となります。</p>
+            </div>
+
+            <div class="check-list-container">
+                <h3 style="text-align: center; margin-bottom: 30px;">導入前チェックリスト</h3>
+                <ul class="check-list">
+                    <li>
+                        <span class="check-label">① 現在、Meta PixelがWebサイトに正しく設置され、イベントが計測できていますか？</span>
+                        <div class="check-options">
+                            <label><input type="radio" name="check1" value="yes"> Yes</label>
+                            <label><input type="radio" name="check1" value="no"> No</label>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="check-label">② Webサイトのドメイン（DNS）の設定を変更する権限をお持ちですか？（サブドメインの作成が必要です）</span>
+                        <div class="check-options">
+                            <label><input type="radio" name="check2" value="yes"> Yes</label>
+                            <label><input type="radio" name="check2" value="no"> No</label>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="check-label">③ Metaビジネスーマネージャの管理者権限をお持ちですか？</span>
+                        <div class="check-options">
+                            <label><input type="radio" name="check3" value="yes"> Yes</label>
+                            <label><input type="radio" name="check3" value="no"> No</label>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="check-label">④ 実装は自社（ご自身）で行い、月額費用（Stape利用料）の支払いが可能ですか？</span>
+                        <div class="check-options">
+                            <label><input type="radio" name="check4" value="yes"> Yes</label>
+                            <label><input type="radio" name="check4" value="no"> No</label>
+                        </div>
+                    </li>
+                </ul>
+                <p style="text-align: center; font-size: 0.9rem; color: var(--secondary-color); margin-top: 20px;">
+                    すべての項目にチェックを入れて、結果をご確認ください。<br>
+                    （※このページは静的モックアップのため、自動判定は行われません。下のセクションで該当する方をご覧ください。）
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="branch-section">
+        <div class="container">
+            <h2>結果：あなたに合った次のステップ</h2>
+            <p class="text-center">上記チェックリストの回答に応じて、最適な進め方をお選びください。</p>
+            
+            <div class="branch-container">
+                <div class="branch-col branch-col-a">
+                    <h3 class="branch-title" style="color: var(--success-color);">すべて「Yes」だった方</h3>
+                    <p>おめでとうございます！<br>あなたはStape Meta CAPI Gatewayを使って、今すぐ簡単にCAPIを始める準備が整っています。</p>
+                    <p>早速、Stapeのアカウントを作成して導入を進めましょう。</p>
+                    <a href="#" class="btn btn-success" style="margin-top: 20px;">Stape Gatewayで<br>今すぐCAPIを始める</a>
+                    <p style="font-size: 0.8rem; color: var(--secondary-color); margin-top: 10px;">(Stape公式サイトへ移動します)</p>
+                </div>
+
+                <div class="branch-col branch-col-b">
+                    <h3 class="branch-title" style="color: #d39e00;">ひとつでも「No」があった方</h3>
+                    <p>残念ながら、現時点ではStape Gatewayをスムーズに導入できない可能性があります。</p>
+                    <p>導入前に環境の整備や、専門家によるサポートが必要です。まずは有償サポート窓口までご相談ください。</p>
+                    <a href="#" class="btn btn-warning" style="margin-top: 20px;">導入のご相談はこちら<br>(有償サポート)</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>【ご注意】このランディングページは、Stape Meta CAPI Gatewayの導入判断をサポートするための情報提供を目的としています。個別の導入サポートや環境構築は有償オプションとなります。</p>
+            <p style="margin-top: 20px; font-size: 0.8rem;">免責事項：Stapeは外部の第三者サービスです。本ページの情報に基づいて実装された後の運用、不具合、仕様変更等に関しては、Stape側の公式サポートをご利用ください。当社では責任を負いかねます。</p>
+            <p style="margin-top: 30px;">© 2023 CAPI導入支援サービス. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
